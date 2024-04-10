@@ -1,0 +1,143 @@
+Grupo:
+Kawã Ricardo Bazante do Nascimento da Silva (MAT. 01616235) 
+Anna Julia da Silva (MAT. 01631263)
+José Paulo da Silva (MAT. 01622179)
+Alessandro Mathews Cardoso Dornelas Dos Santos (MAT. 01614625)
+Turma: GRA0770103DNB
+
+
+CREATE TABLE Funcionarios (
+    ID INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Cargo VARCHAR(50)
+);
+
+CREATE TABLE Professores (
+    ID INT PRIMARY KEY,
+    ID_Funcionario INT,
+    Especialidade VARCHAR(100),
+    FOREIGN KEY (ID_Funcionario) REFERENCES Funcionarios(ID)
+);
+
+CREATE TABLE Materias (
+    ID INT PRIMARY KEY,
+    Nome VARCHAR(100)
+);
+
+CREATE TABLE Alocacao_Professores (
+    ID_Professor INT,
+    ID_Materia INT,
+    Ano_Letivo INT,
+    Semestre INT,
+    FOREIGN KEY (ID_Professor) REFERENCES Professores(ID),
+    FOREIGN KEY (ID_Materia) REFERENCES Materias(ID)
+);
+
+CREATE TABLE Alunos (
+    ID INT PRIMARY KEY,
+    Nome VARCHAR(100),
+    Data_Nascimento DATE,
+    Endereco VARCHAR(255),
+    Telefone VARCHAR(20),
+    Email VARCHAR(100)
+);
+
+CREATE TABLE Matriculas (
+    ID_Aluno INT,
+    ID_Materia INT,
+    Ano_Letivo INT,
+    Semestre INT,
+    FOREIGN KEY (ID_Aluno) REFERENCES Alunos(ID),
+    FOREIGN KEY (ID_Materia) REFERENCES Materias(ID)
+);
+
+CREATE TABLE Notas (
+    ID_Aluno INT,
+    ID_Materia INT,
+    Ano_Letivo INT,
+    Semestre INT,
+    Nota DECIMAL(4,2),
+    FOREIGN KEY (ID_Aluno) REFERENCES Alunos(ID),
+    FOREIGN KEY (ID_Materia) REFERENCES Materias(ID)
+);
+
+
+
+-- Inserir dados na tabela de Funcionários
+INSERT INTO Funcionarios (ID, Nome, Cargo) VALUES (1, 'João Silva', 'Administrativo');
+
+-- Inserir dados na tabela de Professores
+INSERT INTO Professores (ID, ID_Funcionario, Especialidade) VALUES (1, 1, 'Matemática');
+
+-- Inserir dados na tabela de Matérias
+INSERT INTO Materias (ID, Nome) VALUES (1, 'Cálculo I');
+
+-- Inserir dados na tabela de Alocação de Professores
+INSERT INTO Alocacao_Professores (ID_Professor, ID_Materia, Ano_Letivo, Semestre) VALUES (1, 1, 2024, 1);
+
+-- Inserir dados na tabela de Alunos
+INSERT INTO Alunos (ID, Nome, Data_Nascimento, Endereco, Telefone, Email) VALUES (1, 'Maria Oliveira', '2000-05-15', 'Rua ABC, 123', '123456789', 'maria@email.com');
+
+-- Inserir dados na tabela de Matrículas
+INSERT INTO Matriculas (ID_Aluno, ID_Materia, Ano_Letivo, Semestre) VALUES (1, 1, 2024, 1);
+
+-- Inserir dados na tabela de Notas
+INSERT INTO Notas (ID_Aluno, ID_Materia, Ano_Letivo, Semestre, Nota) VALUES (1, 1, 2024, 1, 8.5);
+
+-- Consultar informações sobre um aluno específico e suas notas
+SELECT Alunos.Nome, Materias.Nome AS Materia, Notas.Nota
+FROM Alunos
+JOIN Matriculas ON Alunos.ID = Matriculas.ID_Aluno
+JOIN Materias ON Matriculas.ID_Materia = Materias.ID
+JOIN Notas ON Alunos.ID = Notas.ID_Aluno AND Matriculas.ID_Materia = Notas.ID_Materia
+WHERE Alunos.ID = 1;
+
+-- Consultar os professores e suas especialidades
+SELECT Professores.ID, Funcionarios.Nome AS Nome_Professor, Professores.Especialidade
+FROM Professores
+JOIN Funcionarios ON Professores.ID_Funcionario = Funcionarios.ID;
+
+-- Consultar a alocação de professores por semestre
+SELECT Professores.ID, Funcionarios.Nome AS Nome_Professor, Materias.Nome AS Materia, Alocacao_Professores.Ano_Letivo, Alocacao_Professores.Semestre
+FROM Alocacao_Professores
+JOIN Professores ON Alocacao_Professores.ID_Professor = Professores.ID
+JOIN Materias ON Alocacao_Professores.ID_Materia = Materias.ID;
+
+
+SELECT Alunos.Nome, Materias.Nome AS Materia, Notas.Nota
+FROM Alunos
+JOIN Matriculas ON Alunos.ID = Matriculas.ID_Aluno
+JOIN Materias ON Matriculas.ID_Materia = Materias.ID
+JOIN Notas ON Alunos.ID = Notas.ID_Aluno AND Matriculas.ID_Materia = Notas.ID_Materia
+WHERE Alunos.ID = 1;
+
+SELECT Professores.ID, Funcionarios.Nome AS Nome_Professor, Professores.Especialidade
+FROM Professores
+JOIN Funcionarios ON Professores.ID_Funcionario = Funcionarios.ID;
+
+SELECT Professores.ID, Funcionarios.Nome AS Nome_Professor, Materias.Nome AS Materia, Alocacao_Professores.Ano_Letivo, Alocacao_Professores.Semestre
+FROM Alocacao_Professores
+JOIN Professores ON Alocacao_Professores.ID_Professor = Professores.ID
+JOIN Materias ON Alocacao_Professores.ID_Materia = Materias.ID;
+
+SELECT Alunos.Nome, Materias.Nome AS Materia, Notas.Nota
+FROM Alunos
+JOIN Matriculas ON Alunos.ID = Matriculas.ID_Aluno
+JOIN Materias ON Matriculas.ID_Materia = Materias.ID
+JOIN Notas ON Alunos.ID = Notas.ID_Aluno AND Matriculas.ID_Materia = Notas.ID_Materia;
+
+
+-- Consulta com ID de aluno inexistente
+SELECT Alunos.Nome, Materias.Nome AS Materia, Notas.Nota
+FROM Alunos
+JOIN Matriculas ON Alunos.ID = Matriculas.ID_Aluno
+JOIN Materias ON Matriculas.ID_Materia = Materias.ID
+JOIN Notas ON Alunos.ID = Notas.ID_Aluno AND Matriculas.ID_Materia = Notas.ID_Materia
+WHERE Alunos.ID = 999;
+
+-- Consulta com ID de professor inexistente
+SELECT Professores.ID, Funcionarios.Nome AS Nome_Professor, Materias.Nome AS Materia, Alocacao_Professores.Ano_Letivo, Alocacao_Professores.Semestre
+FROM Alocacao_Professores
+JOIN Professores ON Alocacao_Professores.ID_Professor = Professores.ID
+JOIN Materias ON Alocacao_Professores.ID_Materia = Materias.ID
+WHERE Professores.ID = 999;
